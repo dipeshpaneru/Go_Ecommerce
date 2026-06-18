@@ -2,15 +2,15 @@ package database
 
 import (
 	"database/sql"
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"log"
 )
 
 
-func NewMySQLStorage(cfg mysql.Config) (*sql.DB, error) {
-	sql, err := sql.Open("mysql", cfg.FormatDSN())
+func NewPostgreSQLStorage(connStr string) (*sql.DB, error) {
+	psql, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("Failed to connect to MySQL: %v", err)
+		log.Fatalf("Failed to connect to PostgreSQL: %v", err)
 	}
-	return sql, nil
+	return psql, nil
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"github.com/dipeshpaneru/Go_Ecommerce/cmd/api"
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"github.com/dipeshpaneru/Go_Ecommerce/database"
 	"github.com/dipeshpaneru/Go_Ecommerce/config"
 	"database/sql"
@@ -11,13 +11,13 @@ import (
 
 func main() {
 
-	sql, err := database.NewMySQLStorage(mysql.Config{
-		User:   config.Envs.DBUser,
-		Passwd: config.Envs.DBPassword,
-		Net:    "tcp",
-		Addr:   config.Envs.DBAddress,
-		DBName: config.Envs.DBName,
-	})
+	sql, err := database.NewPostgreSQLStorage(
+		"host=" + config.Envs.Host +
+		" port=" + config.Envs.Port +
+		" user=" + config.Envs.DBUser +
+		" dbname=" + config.Envs.DBName +
+		" sslmode=disable",
+	)
 
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
@@ -25,7 +25,7 @@ func main() {
 
 	initStorage(sql)
 
-	server := api.NewAPIServer(config.Envs.Port, sql)
+	server := api.NewAPIServer(":8080", sql)
 
 	if err := server.Run(); err != nil {
 		log.Fatalf("Failed to run server: %v", err)
