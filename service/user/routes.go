@@ -1,12 +1,15 @@
 package user
 
 import (
+	"fmt"
+	"log"
 	"net/http"
-	"github.com/gorilla/mux"
+
+	"github.com/dipeshpaneru/Go_Ecommerce/service/auth"
 	"github.com/dipeshpaneru/Go_Ecommerce/types"
 	"github.com/dipeshpaneru/Go_Ecommerce/utils"
-	"fmt"
-	"github.com/dipeshpaneru/Go_Ecommerce/service/auth"
+	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/mux"
 )
 
 type Handler struct {
@@ -34,17 +37,27 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	var payload types.RegisterUserPayload
 
-	if err := utils.ParseJson(r, payload); err != nil {
+
+	if err := utils.ParseJson(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
 
+	if err := utils.Validator.Struct(payload); err != nil {
+		errors := err.(validator.ValidationErrors)
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload: %v", errors))
+		return
+	}
+
+
+
 	_, err := h.store.GetUserByEmail(payload.Email)
-	if err == nil {
+	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("User with email %s already exists", payload.Email))
 		return
 	}
+
 
 	hashedPassword, err := auth.HashPassword(payload.Password)
 
@@ -52,6 +65,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
+
 
 	err = h.store.CreateUser(types.User{
 		FirstName: payload.FirstName,
@@ -65,6 +79,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
+
 
 	utils.WriteJson(w, http.StatusCreated, nil)
 

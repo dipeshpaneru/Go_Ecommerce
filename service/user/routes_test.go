@@ -8,6 +8,7 @@ import (
 	"testing"
 	"github.com/dipeshpaneru/Go_Ecommerce/types"
 	"github.com/gorilla/mux"
+	// "log"
 )		
 
 func TestUserServicesRoutes(t *testing.T) {
@@ -21,14 +22,14 @@ func TestUserServicesRoutes(t *testing.T) {
 		payload := types.RegisterUserPayload{
 			FirstName: "Dipesh",
 			LastName: "Paneru",
-			Email: "",
-			Password: "123",
+			Email: "test@gmail.com",
+			Password: "1234567",
 		}
-
+		
 		marshalled, _ := json.Marshal(payload)
-
+		
 		req, err := http.NewRequest("POST", "/register", bytes.NewBuffer(marshalled))
-
+		
 		if err != nil {
 			t.Fatal(err)
 		}
