@@ -39,7 +39,7 @@ func main() {
 		log.Fatalf("Failed to create database driver: %v", err)
 	}	
 	
-	m.up
+	m.up hello helllo
 
 
 }
