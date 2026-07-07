@@ -2,7 +2,7 @@ package user
 
 import (
 	"fmt"
-	"log"
+	// "log"
 	"net/http"
 
 	"github.com/dipeshpaneru/Go_Ecommerce/service/auth"

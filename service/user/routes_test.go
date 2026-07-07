@@ -22,7 +22,7 @@ func TestUserServicesRoutes(t *testing.T) {
 		payload := types.RegisterUserPayload{
 			FirstName: "Dipesh",
 			LastName: "Paneru",
-			Email: "test@gmail.com",
+			Email: "test",
 			Password: "1234567",
 		}
 		
@@ -46,10 +46,41 @@ func TestUserServicesRoutes(t *testing.T) {
 		}
 
 	})
+
+
+	t.Run("Register a user muji", func (t *testing.T)  {
+		
+		payload := types.RegisterUserPayload{
+			FirstName: "Dipesh",
+			LastName: "Paneru",
+			Email: "valid@gmail.com",
+			Password: "12345678",
+		}
+
+		marshalled, _ := json.Marshal(payload)
+		
+		req, err := http.NewRequest("POST", "/register", bytes.NewBuffer(marshalled))
+		
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		
+		rr := httptest.NewRecorder()
+		router := mux.NewRouter()
+
+		router.HandleFunc("/register", handler.handleRegister).Methods("POST")
+		router.ServeHTTP(rr, req)
+
+		if rr.Code != http.StatusCreated {
+			t.Errorf("Expected status code %d, got %d", http.StatusCreated, rr.Code)
+		}
+
+
+})
+
+
 }
-
-
-
 
 
 
