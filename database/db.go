@@ -8,6 +8,7 @@ import (
 
 
 func NewPostgreSQLStorage(connStr string) (*sql.DB, error) {
+	log.Printf("Connecting to PostgreSQL with connection string: %s", connStr)
 	psql, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Failed to connect to PostgreSQL: %v", err)

@@ -43,13 +43,14 @@ func main() {
 	cmd := os.Args[len(os.Args)-1]
 
 	if cmd == "up" {
+		log.Println("Applying migrations...")
 		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 			log.Fatalf("Failed to apply migrations: %v", err)
 		}
 	}
 
 	if cmd == "down" {
-		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		if err := m.Down(); err != nil && err != migrate.ErrNoChange {
 			log.Fatalf("Failed to apply migrations: %v", err)
 		}
 	}
