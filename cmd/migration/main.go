@@ -1,13 +1,14 @@
 package main
 
 import (
-	_ "github.com/lib/pq"
+	"log"
+	"os"
 	"github.com/dipeshpaneru/Go_Ecommerce/database"
 	"github.com/dipeshpaneru/Go_Ecommerce/config"
 	migrate "github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"log"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -39,7 +40,18 @@ func main() {
 		log.Fatalf("Failed to create database driver: %v", err)
 	}	
 	
-	m.up hello helllo
+	cmd := os.Args[len(os.Args)-1]
 
+	if cmd == "up" {
+		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+			log.Fatalf("Failed to apply migrations: %v", err)
+		}
+	}
+
+	if cmd == "down" {
+		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+			log.Fatalf("Failed to apply migrations: %v", err)
+		}
+	}
 
 }
